@@ -1,0 +1,187 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chroma Pop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Comic+Neue:wght@700&family=Pacifico&family=Press+Start+2P&family=Bungee&family=Orbitron:wght@700&family=Caveat:wght@700&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+:root{--panel:rgba(255,255,255,.92);--ink:#1d1b2e;--bg:#f3f1ff;--f:'Fredoka',system-ui,sans-serif;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--panel:rgba(24,21,40,.92);--ink:#f4f2ff;--bg:#15131f}}
+:root[data-theme="dark"]{--panel:rgba(24,21,40,.92);--ink:#f4f2ff;--bg:#15131f}
+html{height:100%;font-size:calc(16px*var(--s,1));scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--ink);font-family:var(--f);-webkit-user-select:none;user-select:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+#c{position:fixed;inset:0;width:100%;height:100%;display:block}
+#hud{position:fixed;top:0;left:0;right:0;padding:calc(10px + env(safe-area-inset-top,0px)) 12px 0;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;pointer-events:none;color:#fff;font-weight:600;font-size:1.05rem}
+.p{background:rgba(0,0,0,.3);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:.35rem .9rem;border-radius:99px;pointer-events:auto;white-space:nowrap}
+#lv{color:#ff5d7a;letter-spacing:2px}#lv s{opacity:.3;text-decoration:none}
+#mid{text-align:center;font-size:.9rem;position:relative;overflow:hidden}#pr{position:absolute;left:0;bottom:0;height:3px;background:#fff;transition:width .3s}
+#hm{border:0;font:inherit;color:#fff;cursor:pointer}
+#hint{position:fixed;left:0;right:0;top:calc(64px + env(safe-area-inset-top,0px));text-align:center;color:#fff;font-weight:600;font-size:1.05rem;padding:0 18px;text-shadow:0 2px 10px rgba(0,0,0,.5);opacity:0;transition:opacity .4s;pointer-events:none}
+#ctl{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:center;gap:clamp(8px,2.5vw,18px);padding:22px 12px calc(16px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,rgba(0,0,0,.28));pointer-events:none}
+#ctl button{pointer-events:auto}
+.sw{width:clamp(44px,13vw,64px);aspect-ratio:1;border-radius:50%;border:4px solid #fff;box-shadow:0 6px 14px rgba(0,0,0,.3);cursor:pointer;transition:transform .15s}
+.sw.on{transform:translateY(-12px) scale(1.12);box-shadow:0 0 0 5px rgba(255,255,255,.55),0 12px 20px rgba(0,0,0,.35)}
+.tb{font:inherit;font-weight:600;font-size:1.2rem;border:4px solid #fff;border-radius:99px;padding:.8rem 1.6rem;cursor:pointer;box-shadow:0 6px 14px rgba(0,0,0,.3);transition:transform .1s}
+.tb:active,.sw:active{transform:scale(.92)}.tb.w{background:#fff;color:#222}.tb.k{background:#111;color:#fff}
+body[data-m="menu"] #hud,body[data-m="menu"] #ctl,body[data-m="bonus"] #ctl,body[data-m="over"] #ctl{display:none}
+#ov{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(10,8,24,.35);padding:16px;overflow:auto}
+.card{background:var(--panel);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-radius:28px;padding:1.4rem 1.5rem;width:min(92vw,400px);text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4);animation:in .4s cubic-bezier(.2,1.4,.4,1)}
+@keyframes in{from{transform:scale(.8);opacity:0}}
+h1{font-size:3.2rem;line-height:.95;margin:.1rem 0 .4rem;background:linear-gradient(90deg,#ff5f2e,#ffb62e,#2fc46b,#2f9bff,#8a3fff,#ff3fa8);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{margin:.2rem 0 .4rem;font-size:1.6rem}p{margin:.3rem 0 .8rem;opacity:.8;line-height:1.35;font-size:.95rem}
+.b{font:inherit;font-size:1.1rem;font-weight:600;border:0;border-radius:99px;padding:.7rem 1.5rem;margin:.3rem;color:#fff;background:linear-gradient(135deg,#7c5cff,#ff5fa2);box-shadow:0 6px 18px rgba(124,92,255,.45);cursor:pointer;transition:transform .12s}
+.b:active{transform:scale(.94)}.b.g{background:none;color:var(--ink);box-shadow:inset 0 0 0 2px currentColor}.b:disabled{opacity:.5}
+.how{text-align:left;font-size:.9rem;margin:.6rem 0;display:grid;gap:.35rem}.how span{display:inline-block;width:1.6rem}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin:.6rem 0}
+.fb{font:inherit;font-size:1rem;padding:.8rem .4rem;border-radius:14px;border:2px solid transparent;background:rgba(124,92,255,.14);color:var(--ink);cursor:pointer}
+.fb.on{border-color:#7c5cff;background:rgba(124,92,255,.3)}.fb.lk{opacity:.45;cursor:default}
+#wh{position:relative;margin:1.1rem auto;width:min(58vw,230px)}
+#rb{position:relative;aspect-ratio:1;border-radius:50%;background:conic-gradient(#f33,#f93,#fd3,#3c6,#3cf,#36f,#93f,#f3c,#f33);box-shadow:0 0 0 8px #fff,0 10px 30px rgba(0,0,0,.35);cursor:grab}
+#rb::after{content:"";position:absolute;inset:35%;border-radius:50%;background:var(--panel)}
+#rb::before{content:"";position:absolute;left:50%;top:5px;width:10px;height:20%;margin-left:-5px;background:#fff;border-radius:6px;z-index:1}#cw{position:absolute;inset:0;display:grid;place-items:center;font-size:3.4rem;animation:rt 1.6s linear infinite;pointer-events:none;z-index:2}@keyframes rt{to{transform:rotate(360deg)}}#sbar{height:16px;border-radius:99px;background:rgba(124,92,255,.2);overflow:hidden;margin:.6rem 0 .2rem}#sf{display:block;height:100%;width:0;background:linear-gradient(90deg,#f33,#fd3,#3c6,#36f,#f3c)}
+#lid{transform-origin:10px 42px;transition:transform .5s cubic-bezier(.3,1.6,.5,1)}
+#cx.open #lid{transform:rotate(-72deg)}#cx svg{animation:sh .6s 2}
+#rv{opacity:0;transform:translateY(14px);transition:.5s .3s;font-size:2.2rem;margin:.2rem 0 .6rem}#cx.open #rv{opacity:1;transform:none}
+@keyframes sh{25%{transform:rotate(-6deg)}75%{transform:rotate(6deg)}}
+@media(prefers-reduced-motion:reduce){.card,#cx svg{animation:none}}
+</style></head><body data-m="menu">
+<canvas id="c"></canvas>
+<div id="hud"><div class="p"><span id="lv"></span></div><div class="p" id="mid"><span id="st"></span><i id="pr"></i></div><div class="p"><button id="hm" class="p" style="padding:0;background:none" aria-label="Main menu">⌂</button> <span id="sc">0</span></div></div>
+<div id="hint"></div><div id="ctl"></div><div id="ov"></div>
+<script>
+/* ===== CHROMA POP - colour theory game =====
+ * Single-file HTML5 canvas game (no build step, no dependencies).
+ * Stages (repeat every 3 levels): 1) Mix paints  2) Warm vs Cool  3) Tint vs Shade.
+ * Every 5 levels: rainbow spinner -> chest -> unlock a font that restyles the whole UI.
+ * Sections: data/colour helpers -> state -> input -> screens -> update/draw loop.
+ */
+const $=i=>document.getElementById(i),c=$('c'),x=c.getContext('2d'),N=5;
+// DATA: unlockable fonts as [name, UI scale]. Index 0 is the free default; the rest unlock via rainbow chests.
+const F=[['Fredoka',1],['Comic Neue',1.05],['Pacifico',.95],['Press Start 2P',.62],['Bungee',.85],['Orbitron',.9],['Caveat',1.2],['Special Elite',.95]];
+// Paint palette: subtractive primaries (R/Y/B) plus secondaries (O/G/V).
+const P={R:'#ff3b3b',Y:'#ffd23b',B:'#2f6bff',O:'#ff8a1f',G:'#2fc46b',V:'#8a3fff'};
+// Mixing table: sorted pair of paints -> resulting colour (secondary and tertiary colours).
+const MX={RY:'#ff8a1f',BY:'#2fc46b',BR:'#8a3fff',OR:'#ff5f2e',OY:'#ffb62e',GY:'#b6e03a',BG:'#1fb5a0',BV:'#4a45ff',RV:'#d63fa8'};
+// Warm and cool colour families used by the Warm/Cool stage.
+const WARM=['#ff4d3a','#ff8a1f','#ffc233','#e8365d','#ff6b6b'],COOL=['#2f7bff','#1fb5c9','#7a4bff','#17c29a','#4aa3ff'];
+const NAMES=['Mix paints','Warm / Cool','Tint / Shade'],TY=['mix','temp','tint'];
+const HINT=['🎨 Mix two paints to match the background','🔥❄️ Tap every segment that matches the background’s temperature','◐ Match the background: add White to tint, Black to shade'];
+const hc=h=>[1,3,5].map(i=>parseInt(h.substr(i,2),16)),rgb=a=>'rgb('+a.map(Math.round)+')',rnd=a=>a[Math.random()*a.length|0];
+// HSL -> RGB converter, used to build tints and shades.
+const hsl=(h,s,l)=>{s/=100;l/=100;const a=s*Math.min(l,1-l),f=n=>{const k=(n+h/30)%12;return 255*(l-a*Math.max(-1,Math.min(k-3,9-k,1)))};return[f(0),f(8),f(4)]};
+// Mixes two paints: table lookup, otherwise average of their RGB values.
+const mixc=(a,b)=>{const k=[a,b].sort().join('');return MX[k]?hc(MX[k]):hc(P[a]).map((v,i)=>(v+hc(P[b])[i])/2)};
+// Tint/shade colour. dir>0 = add white (lighter, less saturated); dir<0 = add black (darker); k = number of steps.
+const tc=(h,k,d)=>hsl(h,d>0?85-9*k:85,55+d*11*k);
+// Persistent save data (best score, unlocked fonts, selected font) stored in localStorage.
+let D={best:0,u:[0],sel:0};try{Object.assign(D,JSON.parse(localStorage.getItem('chromapop')||'{}'))}catch(e){}
+const save=()=>{try{localStorage.setItem('chromapop',JSON.stringify(D))}catch(e){}};
+let ac;const beep=(f,d=.12,t='sine')=>{try{ac=ac||new AudioContext();const o=ac.createOscillator(),g=ac.createGain();o.type=t;o.frequency.value=f;g.gain.setValueAtTime(.12,ac.currentTime);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+d);o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+d)}catch(e){}};
+// Global game state (lives, score, level, current disc, particles, ...).
+const S={mode:'menu',lives:3,score:0,level:1,done:0,streak:0,d:null,fx:[],t:0,fl:0,spawnT:0,ff:'Fredoka',tb:[124,92,255]};
+let W,H,bgc=[124,92,255],last=0;
+const G=Array.from({length:16},()=>({x:Math.random(),y:Math.random(),r:.02+Math.random()*.05,v:.02+Math.random()*.04}));
+const T=()=>TY[(S.level-1)%3],tier=()=>Math.min(1,((S.level-1)/3)|0);
+const setMode=m=>{S.mode=m;document.body.dataset.m=m};
+// Applies a font to the whole UI and the canvas through CSS variables.
+function setFont(i){D.sel=i;const f=F[i];S.ff=`'${f[0]}',system-ui,sans-serif`;const s=document.documentElement.style;s.setProperty('--f',S.ff);s.setProperty('--s',f[1]);save()}
+function size(){const r=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;c.width=W*r;c.height=H*r;x.setTransform(r,0,0,r,0,0)}
+addEventListener('resize',size);size();
+let ht;function say(t,ms=2600){const h=$('hint');h.textContent=t;h.style.opacity=1;clearTimeout(ht);ht=setTimeout(()=>h.style.opacity=0,ms)}
+function hud(){$('lv').innerHTML='♥'.repeat(S.lives)+'<s>'+'♥'.repeat(3-S.lives)+'</s>';$('st').textContent='Lv '+S.level+' · '+NAMES[(S.level-1)%3]+(S.streak>=3?' ⚡':'');$('sc').textContent=S.score;$('pr').style.width=S.done/N*100+'%'}
+// Builds the bottom controls and the hint text for the current level type.
+function setStage(){const t=T(),k=$('ctl');
+ if(t=='mix')k.innerHTML=[...(tier()?'RYBOGV':'RYB')].map(l=>`<button class="sw" data-k="${l}" style="background:${P[l]}" aria-label="paint ${l}"></button>`).join('');
+ else if(t=='tint')k.innerHTML='<button class="tb w" data-dir="1">＋ White</button><button class="tb k" data-dir="-1">＋ Black</button>';
+ else k.innerHTML='';
+ say(HINT[(S.level-1)%3],3400)}
+// Seconds a disc needs to cross the screen. Shrinks with level and win streak (adaptive difficulty).
+const dur=()=>Math.max(2.8,8.5/(1+.06*(S.level-1)+.05*Math.min(S.streak,12)));
+// Creates a disc for the current stage and sets the target background colour.
+function spawn(){const t=T(),r=Math.max(56,Math.min(Math.min(W,H)*.17,105));
+ const d={type:t,y:H+r+10,r,rot:0,sk:0,t:0,ph:Math.random()*6,v:H/dur(),x:W/2};
+ if(t=='mix'){const k=rnd(tier()?Object.keys(MX):['RY','BY','BR']);d.tgt=hc(MX[k]);d.sel=null;d.res=null;S.tb=d.tgt}
+ else if(t=='temp'){const warm=Math.random()<.5,n=4+(Math.random()*3|0),m=2+(Math.random()*2|0),fl=Array.from({length:n},(_,i)=>i<m).sort(()=>Math.random()-.5);
+  d.warm=warm;d.left=m;d.segs=fl.map(f=>({m:f,on:1,c:hc(rnd(f==warm?WARM:COOL))}));S.tb=hc(rnd(warm?WARM:COOL))}
+ else{d.h=Math.random()*360|0;d.k=1+(Math.random()*3|0);d.dir=Math.random()<.5?1:-1;d.cur=0;d.cv=0;S.tb=tc(d.h,d.k,d.dir)}
+ S.d=d}
+function burst(px,py,col,n=26){for(let i=0;i<n;i++){const a=Math.random()*6.28,s=120+Math.random()*340;S.fx.push({k:0,x:px,y:py,vx:Math.cos(a)*s,vy:Math.sin(a)*s,l:.7,m:.7,c:Math.random()<.3?[255,255,255]:col,z:4+Math.random()*7})}S.fx.push({k:1,x:px,y:py,l:.45,m:.45,c:col})}
+const pop=(px,py,t,c='#fff')=>S.fx.push({k:2,x:px,y:py,l:.9,m:.9,t,c});
+// Wrong answer or disc reached the top: lose a life and reset the streak.
+function bad(d){S.lives--;S.streak=0;S.fl=1;d.sk=.4;beep(130,.3,'sawtooth');pop(d.x,Math.max(d.y,100),'✕','#ff4d6d');hud();if(S.lives<=0)over()}
+// Correct answer: add score (with streak bonus), spawn particles, advance level progress.
+function ok(d,col){const p=10+Math.min(S.streak,10)*2;S.score+=p;S.streak++;burst(d.x,d.y,col);pop(d.x,d.y-d.r,'+'+p);beep(500+S.streak*35,.14);S.d=null;S.done++;S.spawnT=.45;hud();lvl()}
+// Level-up logic. Every 5th level triggers the rainbow spinner bonus.
+function lvl(){if(S.done<N)return;const L=S.level;S.done=0;if(L%5==0){setMode('bonus');S.d=null;setTimeout(rainbow,600)}else{S.level++;setStage();S.spawnT=1.6;say('Level '+L+' cleared ✨',1800)}hud()}
+function sync(){const d=S.d;document.querySelectorAll('.sw').forEach(b=>b.classList.toggle('on',!!d&&b.dataset.k==d.sel))}
+// Input: paint buttons (Mix stage) and White/Black buttons (Tint/Shade stage).
+$('ctl').onpointerdown=e=>{const b=e.target.closest('button'),d=S.d;if(!b||!d||S.mode!='play')return;
+ if(d.type=='mix'){if(d.res)return;const k=b.dataset.k;if(!d.sel)d.sel=k;else if(d.sel==k)d.sel=null;else{const m=mixc(d.sel,k);d.res=m;d.rt=.5;if(m.join()==d.tgt.join()){ok(d,m)}else bad(d)}beep(400,.05,'triangle')}
+ else if(d.type=='tint'){if(+b.dataset.dir!=d.dir)bad(d);else{d.cur++;beep(380+d.cur*90,.08,'triangle');if(d.cur>=d.k)ok(d,tc(d.h,d.k,d.dir))}}
+ sync()};
+// Input: tapping disc segments in the Warm/Cool stage (pointer angle -> segment hit test).
+c.onpointerdown=e=>{const d=S.d;if(S.mode!='play'||!d||d.type!='temp')return;const dx=e.clientX-d.x,dy=e.clientY-d.y;if(Math.hypot(dx,dy)>d.r*1.15)return;
+ const n=d.segs.length,a=6.2832/n;let g=((Math.atan2(dy,dx)-d.rot)%6.2832+6.2832)%6.2832;const s=d.segs[g/a|0];if(!s.on)return;
+ if(s.m){s.on=0;d.left--;S.score+=5;burst(e.clientX,e.clientY,s.c,10);beep(600+d.left*120,.08,'triangle');if(d.left<=0)ok(d,s.c);else hud()}else bad(d)};
+// Starts a new run.
+function start(){Object.assign(S,{lives:3,score:0,level:1,done:0,streak:0,d:null,fx:[],spawnT:.8});$('ov').style.display='none';setMode('play');setStage();hud()}
+// Game over: save best score and show Play again / Main menu / Fonts.
+function over(){setMode('over');S.d=null;const nb=S.score>D.best;if(nb){D.best=S.score;save()}
+ setTimeout(()=>{if(S.mode=='over')show(`<h2>Run over</h2><div style="font-size:3rem;font-weight:600">${S.score}</div><p>${nb?'🎉 New best!':'Best: '+D.best} · Reached level ${S.level}</p><button class="b" data-a="play">Play again</button><button class="b g" data-a="menu">Main menu</button><button class="b g" data-a="fonts">Fonts</button>`)},700)}
+const show=h=>{const o=$('ov');o.innerHTML='<div class="card">'+h+'</div>';o.style.display='flex'};
+// Main menu screen.
+function menu(){setMode('menu');S.d=null;show(`<h1>Chroma<br>Pop</h1><p>Pop the rising discs by thinking like a colour artist.</p><div class="how"><div><span>🎨</span>Mix two paints to match the background</div><div><span>🔥</span>Tap the warm or cool segments</div><div><span>◐</span>Add white to tint, black to shade</div><div><span>🌈</span>Every 5 levels: spin for a font chest</div></div><button class="b" data-a="play">▶ Play</button><button class="b g" data-a="fonts">Fonts ${D.u.length}/${F.length}</button><p>Best score: ${D.best}</p>`)}
+// Font collection screen (locked fonts show as ???).
+function fonts(){show(`<h2>Fonts</h2><p>Unlock new fonts from rainbow chests. Tap one to restyle the whole game.</p><div class="fg">${F.map((f,i)=>D.u.includes(i)?`<button class="fb${D.sel==i?' on':''}" data-a="use" data-v="${i}" style="font-family:'${f[0]}'">${f[0]}</button>`:'<button class="fb lk" disabled>🔒 ???</button>').join('')}</div><button class="b" data-a="menu">Back</button>`)}
+// Rainbow bonus: osu-style spinner screen.
+function rainbow(){show(`<h2 style="font-size:2.4rem">🌈 SPIN!</h2><p>Drag in circles as fast as you can to fill the bar and win a font chest.</p><div id="wh"><div id="rb"></div><b id="cw">↻</b></div><div id="sbar"><i id="sf"></i></div><p id="sp">Keep spinning! 0%</p>`);initSpin()}
+const CH='<svg viewBox="0 0 120 100" width="150"><rect x="10" y="40" width="100" height="52" rx="8" fill="#8b5a2b"/><rect x="10" y="62" width="100" height="8" fill="#5e3b16"/><g id="lid"><path d="M10 42a50 34 0 0 1 100 0z" fill="#b87333"/></g><rect x="52" y="52" width="16" height="20" rx="3" fill="#ffd23b"/></svg>';
+// Chest reveal: unlocks a random locked font (or gives bonus points if all are owned).
+function chest(){const o=$('ov');o.onpointerdown=o.onpointermove=o.onpointerup=o.onpointercancel=null;o.style.touchAction='';const lk=F.map((_,i)=>i).filter(i=>!D.u.includes(i));let fi=-1;if(lk.length){fi=rnd(lk);D.u.push(fi);save()}else S.score+=300;
+ show(`<h2>${fi<0?'Every font owned! +300':'Font unlocked!'}</h2><div id="cx">${CH}<div id="rv" style="font-family:'${fi<0?'Fredoka':F[fi][0]}'">${fi<0?'✨':'Aa '+F[fi][0]}</div></div>${fi<0?'':`<button class="b" data-a="use2" data-v="${fi}">Use it now</button>`}<button class="b ${fi<0?'':'g'}" data-a="cont">Keep playing</button>`);
+ beep(660,.2);setTimeout(()=>{$('cx').classList.add('open');beep(880,.3,'triangle');burst(W/2,H/2,[255,210,60],40)},700)}
+// Spinner logic: pointer angle around the wheel -> wheel rotation; total rotation fills the progress bar.
+function initSpin(){const o=$('ov'),w=$('rb'),f=$('sf'),t=$('sp');let ang=0,prev=null,tot=0,done=0;const NEED=25;
+ const pt=e=>{const r=w.getBoundingClientRect();return Math.atan2(e.clientY-r.top-r.height/2,e.clientX-r.left-r.width/2)};
+ o.style.touchAction='none';
+ o.onpointerdown=e=>{prev=pt(e);$('cw').style.display='none'};
+ o.onpointermove=e=>{if(prev==null||done)return;const a=pt(e);let d=a-prev;if(d>3.1416)d-=6.2832;if(d<-3.1416)d+=6.2832;prev=a;const b=tot;ang+=d;tot+=Math.abs(d);w.style.transform=`rotate(${ang}rad)`;const p=Math.min(1,tot/NEED);f.style.width=p*100+'%';t.textContent=p<1?'Keep spinning! '+Math.round(p*100)+'%':'Nice! 🎁';if((tot*2|0)!=(b*2|0))beep(300+p*700,.04,'triangle');if(p>=1){done=1;burst(W/2,H/2,[255,210,60],30);setTimeout(chest,600)}};
+ o.onpointerup=o.onpointercancel=()=>prev=null}
+function cont(){$('ov').style.display='none';S.level++;S.done=0;setMode('play');setStage();S.spawnT=1;hud()}
+$('ov').onclick=e=>{const b=e.target.closest('[data-a]');if(!b)return;const v=+b.dataset.v;({play:start,menu,fonts,use(){setFont(v);fonts()},use2(){setFont(v);cont()},cont})[b.dataset.a]()};
+$('hm').onclick=menu;
+// Game logic tick (dt = seconds since the previous frame).
+function update(dt){S.t+=dt;S.fl=Math.max(0,S.fl-dt*2);
+ if(S.mode=='menu'||S.mode=='bonus')S.tb=hsl(S.t*22%360,70,58);
+ G.forEach(g=>{g.y-=g.v*dt;if(g.y<-.1)g.y=1.1});
+ for(const f of S.fx){f.l-=dt;if(f.k==0){f.x+=f.vx*dt;f.y+=f.vy*dt;f.vy+=700*dt}else if(f.k==2)f.y-=50*dt}S.fx=S.fx.filter(f=>f.l>0);
+ const d=S.d;
+ if(!d){if(S.mode=='play'){S.spawnT-=dt;if(S.spawnT<=0)spawn()}return}
+ if(S.mode!='play')return;
+ d.y-=d.v*dt;d.t+=dt;d.rot+=dt*.6;d.sk=Math.max(0,d.sk-dt);d.x=W/2+Math.sin(d.t*.9+d.ph)*Math.min(W*.16,150);
+ if(d.rt>0){d.rt-=dt;if(d.rt<=0&&S.d==d&&d.res){d.res=null;d.sel=null;sync()}}
+ if(d.cv!=null)d.cv+=(d.cur-d.cv)*Math.min(1,dt*10);
+ if(d.y-d.r<=0){bad(d);if(S.mode=='play'){S.d=null;S.done++;S.spawnT=.8;hud();lvl()}}}
+// Draws one disc: segments for Warm/Cool, a solid colour for Mix and Tint/Shade.
+function disc(d){const r=d.r;x.save();x.translate(d.x+Math.sin(S.t*70)*9*d.sk,d.y);
+ x.shadowColor='rgba(0,0,0,.35)';x.shadowBlur=26;x.shadowOffsetY=10;x.beginPath();x.arc(0,0,r,0,7);x.fillStyle='#fff';x.fill();x.shadowColor='transparent';
+ if(d.type=='temp'){const n=d.segs.length,a=6.2832/n;d.segs.forEach((s,i)=>{x.beginPath();x.moveTo(0,0);x.arc(0,0,r-2,d.rot+i*a,d.rot+(i+1)*a);x.closePath();x.fillStyle=s.on?rgb(s.c):'rgba(255,255,255,.15)';x.fill();x.lineWidth=3;x.strokeStyle='#fff';x.stroke()})}
+ else{const col=d.type=='mix'?(d.res||(d.sel?hc(P[d.sel]):[245,245,252])):tc(d.h,d.cv,d.dir);x.beginPath();x.arc(0,0,r-3,0,7);x.fillStyle=rgb(col);x.fill()}
+ x.beginPath();x.arc(0,0,r*.55,0,7);x.lineWidth=3;x.strokeStyle='rgba(255,255,255,.4)';x.stroke();
+ x.beginPath();x.arc(-r*.3,-r*.35,r*.3,0,7);x.fillStyle='rgba(255,255,255,.22)';x.fill();
+ if(d.type=='mix'&&!d.res){x.font='600 '+r*.7+'px '+S.ff;x.textAlign='center';x.textBaseline='middle';x.fillStyle='rgba(40,30,70,.55)';x.fillText('?',0,r*.04)}
+ x.restore()}
+// Renders the background gradient, danger glow, disc and particles.
+function draw(dt){bgc=bgc.map((v,i)=>v+(S.tb[i]-v)*Math.min(1,dt*6));
+ const g=x.createRadialGradient(W/2,H*.45,0,W/2,H*.45,Math.max(W,H)*.8);g.addColorStop(0,rgb(bgc.map(v=>v+(255-v)*.16)));g.addColorStop(1,rgb(bgc.map(v=>v*.78)));x.fillStyle=g;x.fillRect(0,0,W,H);
+ x.fillStyle='rgba(255,255,255,.09)';G.forEach(o=>{x.beginPath();x.arc(o.x*W,o.y*H,o.r*Math.min(W,H),0,7);x.fill()});
+ const d=S.d;if(d&&S.mode=='play'){const nr=Math.max(0,Math.min(1,1-(d.y-d.r)/(H*.28)));if(nr>0){const t=x.createLinearGradient(0,0,0,110);t.addColorStop(0,`rgba(255,40,70,${nr*.8})`);t.addColorStop(1,'rgba(255,40,70,0)');x.fillStyle=t;x.fillRect(0,0,W,110)}}
+ if(d)disc(d);
+ for(const f of S.fx){const a=f.l/f.m;x.globalAlpha=Math.max(0,a);
+  if(f.k==0){x.fillStyle=rgb(f.c);x.beginPath();x.arc(f.x,f.y,f.z*a+1,0,7);x.fill()}
+  else if(f.k==1){x.strokeStyle=rgb(f.c);x.lineWidth=6*a;x.beginPath();x.arc(f.x,f.y,40+(1-a)*130,0,7);x.stroke()}
+  else{x.font='600 28px '+S.ff;x.textAlign='center';x.fillStyle=f.c;x.shadowColor='rgba(0,0,0,.4)';x.shadowBlur=6;x.fillText(f.t,f.x,f.y);x.shadowBlur=0}}
+ x.globalAlpha=1;if(S.fl>0){x.fillStyle=`rgba(255,40,70,${S.fl*.35})`;x.fillRect(0,0,W,H)}}
+// Main loop using requestAnimationFrame; dt is clamped so gameplay stays smooth.
+function loop(t){const dt=Math.min(.05,(t-last)/1000||0);last=t;update(dt);draw(dt);requestAnimationFrame(loop)}
+setFont(D.u.includes(D.sel)?D.sel:0);menu();hud();requestAnimationFrame(loop);
+</script></body></html>
